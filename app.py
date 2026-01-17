@@ -44,6 +44,7 @@ st.markdown("""
         div[data-testid="stDataFrame"] {display: none !important;}
         div[data-testid="stTable"] {display: none !important;}
         button[title="View fullscreen"] {display: none !important;}
+        div[data-testid="stPlotlyChart"] {pointer-events: none;}
         .header-text-left, .header-text-right {text-align: center !important;}
     }
     .header-text-left {font-size: 1.8rem; font-weight: 800; margin: 0; padding: 0; text-align: right; transform: translateY(-6px);}
