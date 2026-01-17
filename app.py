@@ -8,49 +8,7 @@ from PIL import Image
 from decimal import Decimal, ROUND_HALF_UP
 st.set_page_config(page_title="JNTU Dashboard", page_icon="🎓", layout="wide", initial_sidebar_state="collapsed")
 chart_config = {'displayModeBar': False, 'staticPlot': False, 'scrollZoom': False, 'showAxisDragHandles': False, 'dragmode': False}
-st.markdown("""
-<style>
-    .block-container {padding-top: 1rem; padding-bottom: 2rem; max-width: 100% !important;}
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    [data-testid="stSidebar"] {display: none;}
-    h1, h2, h3 {font-family: 'Inter', sans-serif; margin-top: 1.5rem !important; margin-bottom: 0.5rem !important;}
-    div[data-testid="stRadio"] {background-color: #f3f4f6; padding: 10px 15px; border-radius: 12px; border: 1px solid #e5e7eb; margin-bottom: 20px;}
-    div[data-testid="stRadio"] > div[role="radiogroup"] {gap: 15px; align-items: center; flex-wrap: wrap;}
-    div[data-testid="stRadio"] label p {font-size: 1.0rem !important; font-weight: 600 !important; color: #374151 !important; margin: 0px;}
-    div[data-testid="stRadio"] label:hover p {color: #000000 !important;}
-    .metric-container {display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 10px;}
-    .metric-card {background-color: #ffffff; border: 1px solid #e0e0e0; border-left: 5px solid #4B5563; padding: 15px; border-radius: 8px; color: #1F2937 !important; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center;}
-    .metric-card h3 {margin: 0; font-size: 1.8em; font-weight: 700; color: #111827 !important;}
-    .metric-card p {margin: 5px 0 0 0; font-size: 0.9em; color: #6B7280 !important; font-weight: 600; text-transform: uppercase;}
-    .info-box {background: #f9fafb; padding: 10px; border-radius: 8px; border: 1px solid #e5e7eb; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center; margin-bottom: 5px;}
-    .info-label {font-size: 0.75em; color: #6b7280 !important; text-transform: uppercase; font-weight: 700;}
-    .info-value {font-size: 1.0em; color: #111827 !important; font-weight: 700; word-wrap: break-word;}
-    .mobile-only {display: none !important;}
-    .student-card {border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px; margin-bottom: 8px; background-color: white; box-shadow: 0 1px 2px rgba(0,0,0,0.05);}
-    .card-row {display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;}
-    .card-title {margin: 0; font-size: 0.95rem; font-weight: 700; color: #111827 !important;}
-    .card-sub {margin: 0; font-size: 0.8rem; color: #6B7280 !important;}
-    .card-stat {font-weight: 800; color: #4F46E5 !important; font-size: 1rem;}
-    .card-tag {padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;}
-    .mobile-scroll-box {max-height: 400px; overflow-y: auto; padding: 4px; border: 1px solid #e5e7eb; border-radius: 8px; background: #ffffff; margin-bottom: 20px;}
-    .black-text-force {color: #000000 !important;}
-    .stat-text-val {font-size: 1.8em; font-weight: 700; line-height: 1.2;}
-    .stat-text-lbl {font-size: 0.9em; font-weight: 600; text-transform: uppercase; margin-top: 0px; opacity: 0.8;}
-    @media only screen and (max-width: 768px) {
-        .metric-container {grid-template-columns: repeat(2, 1fr);}
-        .block-container {padding-left: 0.5rem !important; padding-right: 0.5rem !important;}
-        .mobile-only {display: block !important;}
-        div[data-testid="stDataFrame"] {display: none !important;}
-        div[data-testid="stTable"] {display: none !important;}
-        button[title="View fullscreen"] {display: none !important;}
-        div[data-testid="stPlotlyChart"] {pointer-events: none;}
-        .header-text-left, .header-text-right {text-align: center !important;}
-    }
-    .header-text-left {font-size: 1.8rem; font-weight: 800; margin: 0; padding: 0; text-align: right; transform: translateY(-6px);}
-    .header-text-right {font-size: 1.8rem; font-weight: 800; margin: 0; padding: 0; text-align: left; transform: translateY(-6px);}
-</style>
-""", unsafe_allow_html=True)
+st.markdown("""<style>.block-container {padding-top: 1rem; padding-bottom: 2rem; max-width: 100% !important;} #MainMenu {visibility: hidden;} footer {visibility: hidden;} [data-testid="stSidebar"] {display: none;} h1, h2, h3 {font-family: 'Inter', sans-serif; margin-top: 1.5rem !important; margin-bottom: 0.5rem !important;} div[data-testid="stRadio"] {background-color: #f3f4f6; padding: 10px 15px; border-radius: 12px; border: 1px solid #e5e7eb; margin-bottom: 20px;} div[data-testid="stRadio"] > div[role="radiogroup"] {gap: 15px; align-items: center; flex-wrap: wrap;} div[data-testid="stRadio"] label p {font-size: 1.0rem !important; font-weight: 600 !important; color: #374151 !important; margin: 0px;} div[data-testid="stRadio"] label:hover p {color: #000000 !important;} .metric-container {display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 10px;} .metric-card {background-color: #ffffff; border: 1px solid #e0e0e0; border-left: 5px solid #4B5563; padding: 15px; border-radius: 8px; color: #1F2937 !important; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center;} .metric-card h3 {margin: 0; font-size: 1.8em; font-weight: 700; color: #111827 !important;} .metric-card p {margin: 5px 0 0 0; font-size: 0.9em; color: #6B7280 !important; font-weight: 600; text-transform: uppercase;} .info-box {background: #f9fafb; padding: 10px; border-radius: 8px; border: 1px solid #e5e7eb; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center; margin-bottom: 5px;} .info-label {font-size: 0.75em; color: #6b7280 !important; text-transform: uppercase; font-weight: 700;} .info-value {font-size: 1.0em; color: #111827 !important; font-weight: 700; word-wrap: break-word;} .mobile-only {display: none !important;} .student-card {border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px; margin-bottom: 8px; background-color: white; box-shadow: 0 1px 2px rgba(0,0,0,0.05);} .card-row {display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;} .card-title {margin: 0; font-size: 0.95rem; font-weight: 700; color: #111827 !important;} .card-sub {margin: 0; font-size: 0.8rem; color: #6B7280 !important;} .card-stat {font-weight: 800; color: #4F46E5 !important; font-size: 1rem;} .card-tag {padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;} .mobile-scroll-box {max-height: 400px; overflow-y: auto; padding: 4px; border: 1px solid #e5e7eb; border-radius: 8px; background: #ffffff; margin-bottom: 20px;} .black-text-force {color: #000000 !important;} .stat-text-val {font-size: 1.8em; font-weight: 700; line-height: 1.2;} .stat-text-lbl {font-size: 0.9em; font-weight: 600; text-transform: uppercase; margin-top: 0px; opacity: 0.8;} @media only screen and (max-width: 768px) { .metric-container {grid-template-columns: repeat(2, 1fr);} .block-container {padding-left: 0.5rem !important; padding-right: 0.5rem !important;} .mobile-only {display: block !important;} div[data-testid="stDataFrame"] {display: none !important;} div[data-testid="stTable"] {display: none !important;} button[title="View fullscreen"] {display: none !important;} .header-text-left, .header-text-right {text-align: center !important;} div[data-testid="stPlotlyChart"] { position: relative; touch-action: none !important; } div[data-testid="stPlotlyChart"]::after { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: transparent; z-index: 1000; } div[data-testid="stDataFrame"], div[data-testid="stTable"] { pointer-events: none !important; } }</style>""", unsafe_allow_html=True)
 def fmt_dec(value):
     try:
         if value is None or pd.isna(value): return "0.00"
@@ -167,15 +125,7 @@ def get_student_photo(hall_ticket):
     return None
 def render_overview_subtab(students_df, cgpa_df, marks_df):
     st.subheader("Key Statistics")
-    metrics_html = f"""
-    <div class="metric-container">
-        <div class='metric-card' style='border-left-color: #6366f1;'><h3>{len(students_df)}</h3><p>Total Students</p></div>
-        <div class='metric-card' style='border-left-color: #ec4899;'><h3>{(cgpa_df['honors_cgpa'] > 0).sum()}</h3><p>Honors</p></div>
-        <div class='metric-card' style='border-left-color: #10b981;'><h3>{(cgpa_df['minors_cgpa'] > 0).sum()}</h3><p>Minors</p></div>
-        <div class='metric-card' style='border-left-color: #f59e0b;'><h3>{fmt_dec(cgpa_df['regular_cgpa'].max())}</h3><p>Highest CGPA</p></div>
-        <div class='metric-card' style='border-left-color: #8b5cf6;'><h3>{fmt_dec(cgpa_df['regular_cgpa'].mean())}</h3><p>Average CGPA</p></div>
-    </div>
-    """
+    metrics_html = f"""<div class="metric-container"><div class='metric-card' style='border-left-color: #6366f1;'><h3>{len(students_df)}</h3><p>Total Students</p></div><div class='metric-card' style='border-left-color: #ec4899;'><h3>{(cgpa_df['honors_cgpa'] > 0).sum()}</h3><p>Honors</p></div><div class='metric-card' style='border-left-color: #10b981;'><h3>{(cgpa_df['minors_cgpa'] > 0).sum()}</h3><p>Minors</p></div><div class='metric-card' style='border-left-color: #f59e0b;'><h3>{fmt_dec(cgpa_df['regular_cgpa'].max())}</h3><p>Highest CGPA</p></div><div class='metric-card' style='border-left-color: #8b5cf6;'><h3>{fmt_dec(cgpa_df['regular_cgpa'].mean())}</h3><p>Average CGPA</p></div></div>"""
     st.markdown(metrics_html, unsafe_allow_html=True)
     st.markdown("---")
     c1, c2 = st.columns(2)
@@ -403,15 +353,7 @@ def render_cohorts_subtab(cgpa_df, semester_df):
     st.subheader("Honors & Minors")
     hon_df = cgpa_df[cgpa_df['honors_cgpa'] > 0].copy()
     min_df = cgpa_df[cgpa_df['minors_cgpa'] > 0].copy()
-    st.markdown(f"""
-    <div class="metric-container" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 20px;">
-        <div class='metric-card'><h3>{len(hon_df)}</h3><p>Honors Enrolled</p></div>
-        <div class='metric-card'><h3>{fmt_dec(hon_df['honors_cgpa'].mean()) if not hon_df.empty else "0.00"}</h3><p>Honors Avg CGPA</p></div>
-    </div>
-    <div class="metric-container" style="grid-template-columns: repeat(2, 1fr);">
-        <div class='metric-card'><h3>{len(min_df)}</h3><p>Minors Enrolled</p></div>
-        <div class='metric-card'><h3>{fmt_dec(min_df['minors_cgpa'].mean()) if not min_df.empty else "0.00"}</h3><p>Minors Avg CGPA</p></div>
-    </div>""", unsafe_allow_html=True)
+    st.markdown(f"""<div class="metric-container" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 20px;"><div class='metric-card'><h3>{len(hon_df)}</h3><p>Honors Enrolled</p></div><div class='metric-card'><h3>{fmt_dec(hon_df['honors_cgpa'].mean()) if not hon_df.empty else "0.00"}</h3><p>Honors Avg CGPA</p></div></div><div class="metric-container" style="grid-template-columns: repeat(2, 1fr);"><div class='metric-card'><h3>{len(min_df)}</h3><p>Minors Enrolled</p></div><div class='metric-card'><h3>{fmt_dec(min_df['minors_cgpa'].mean()) if not min_df.empty else "0.00"}</h3><p>Minors Avg CGPA</p></div></div>""", unsafe_allow_html=True)
     c1, c2 = st.columns(2)
     with c1:
         if not hon_df.empty:
@@ -446,18 +388,7 @@ def render_individual_tab(students_df):
     exam_history = load_student_history(hall_ticket)
     st.markdown(f"<h1 style='text-align: left; margin-top: 0px;'>{stu['full_name']}</h1>", unsafe_allow_html=True)
     st_type = stu.get('degree_type','REGULAR') if stu.get('degree_type') in ['HONORS','MINORS'] else stu['student_type']
-    st.markdown(f"""
-    <div class="metric-container" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px;">
-        <div class='info-box'><span class='info-label'>Roll Number</span><span class='info-value'>{hall_ticket}</span></div>
-        <div class='info-box'><span class='info-label'>Branch</span><span class='info-value'>{stu['branch']}</span></div>
-        <div class='info-box'><span class='info-label'>Type</span><span class='info-value'>{st_type}</span></div>
-        <div class='info-box'><span class='info-label'>Status</span><span class='info-value'>{clean_status(stu['status'])}</span></div>
-        <div class='info-box'><span class='info-label'>DOB</span><span class='info-value'>{stu.get('dob','-')}</span></div>
-        <div class='info-box'><span class='info-label'>Blood Group</span><span class='info-value'>{stu.get('blood_group','-')}</span></div>
-        <div class='info-box'><span class='info-label'>Phone</span><span class='info-value'>{stu.get('phone','-')}</span></div>
-        <div class='info-box'><span class='info-label'>Address</span><span class='info-value' style='font-size:0.9em;'>{stu.get('address','-')}</span></div>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(f"""<div class="metric-container" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px;"><div class='info-box'><span class='info-label'>Roll Number</span><span class='info-value'>{hall_ticket}</span></div><div class='info-box'><span class='info-label'>Branch</span><span class='info-value'>{stu['branch']}</span></div><div class='info-box'><span class='info-label'>Type</span><span class='info-value'>{st_type}</span></div><div class='info-box'><span class='info-label'>Status</span><span class='info-value'>{clean_status(stu['status'])}</span></div><div class='info-box'><span class='info-label'>DOB</span><span class='info-value'>{stu.get('dob','-')}</span></div><div class='info-box'><span class='info-label'>Blood Group</span><span class='info-value'>{stu.get('blood_group','-')}</span></div><div class='info-box'><span class='info-label'>Phone</span><span class='info-value'>{stu.get('phone','-')}</span></div><div class='info-box'><span class='info-label'>Address</span><span class='info-value' style='font-size:0.9em;'>{stu.get('address','-')}</span></div></div>""", unsafe_allow_html=True)
     st.markdown("---")
     c_photo, c_stats = st.columns([1, 4])
     with c_photo:
@@ -476,17 +407,7 @@ def render_individual_tab(students_df):
         all_c = load_all_cgpa_data()
         rank = (all_c['regular_cgpa'] > cgpa['regular_cgpa']).sum() + 1
         percentile = ((len(all_c)-rank+1)/len(all_c)*100)
-        st.markdown(f"""
-        <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
-            <div style="flex: 1 1 140px;"><div class="stat-text-val">{fmt_dec(cgpa['regular_cgpa'])}</div><div class="stat-text-lbl">Overall CGPA</div></div>
-            <div style="flex: 1 1 140px;"><div class="stat-text-val">{hm_val}</div><div class="stat-text-lbl">{hm_label}</div></div>
-            <div style="flex: 1 1 140px;"><div class="stat-text-val">{int(cgpa['regular_credits_secured'])}/{int(cgpa['regular_credits_registered'])}</div><div class="stat-text-lbl">Credits</div></div>
-            <div style="flex: 1 1 140px;"><div class="stat-text-val">{rank}/{len(all_c)}</div><div class="stat-text-lbl">Batch Rank</div></div>
-            <div style="flex: 1 1 140px;"><div class="stat-text-val">{fmt_dec(cgpa['regular_percentage'])}%</div><div class="stat-text-lbl">Percentage</div></div>
-            <div style="flex: 1 1 140px;"><div class="stat-text-val">{fmt_dec(percentile)}%</div><div class="stat-text-lbl">Percentile</div></div>
-            <div style="flex: 1 1 140px;"><div class="stat-text-val">{get_short_degree_class(cgpa['degree_class'])}</div><div class="stat-text-lbl">Class</div></div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f"""<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;"><div style="flex: 1 1 140px;"><div class="stat-text-val">{fmt_dec(cgpa['regular_cgpa'])}</div><div class="stat-text-lbl">Overall CGPA</div></div><div style="flex: 1 1 140px;"><div class="stat-text-val">{hm_val}</div><div class="stat-text-lbl">{hm_label}</div></div><div style="flex: 1 1 140px;"><div class="stat-text-val">{int(cgpa['regular_credits_secured'])}/{int(cgpa['regular_credits_registered'])}</div><div class="stat-text-lbl">Credits</div></div><div style="flex: 1 1 140px;"><div class="stat-text-val">{rank}/{len(all_c)}</div><div class="stat-text-lbl">Batch Rank</div></div><div style="flex: 1 1 140px;"><div class="stat-text-val">{fmt_dec(cgpa['regular_percentage'])}%</div><div class="stat-text-lbl">Percentage</div></div><div style="flex: 1 1 140px;"><div class="stat-text-val">{fmt_dec(percentile)}%</div><div class="stat-text-lbl">Percentile</div></div><div style="flex: 1 1 140px;"><div class="stat-text-val">{get_short_degree_class(cgpa['degree_class'])}</div><div class="stat-text-lbl">Class</div></div></div>""", unsafe_allow_html=True)
     st.markdown("---")
     if not sem.empty:
         st.subheader("Performance Trend")
@@ -499,14 +420,7 @@ def render_individual_tab(students_df):
         fig.add_hline(y=sem['sgpa'].mean(), line_dash="dot", line_color='#ef4444', annotation_text=f"Average: {fmt_dec(sem['sgpa'].mean())}")
         fig = fix_chart_layout(fig)
         st.plotly_chart(fig, width="stretch", config=chart_config)
-        st.markdown(f"""
-        <div class="metric-container">
-            <div class='metric-card'><h3>{fmt_dec(sem['sgpa'].max())}</h3><p>High</p></div>
-            <div class='metric-card'><h3>{fmt_dec(sem['sgpa'].min())}</h3><p>Low</p></div>
-            <div class='metric-card'><h3>{fmt_dec(sem['sgpa'].mean())}</h3><p>Average</p></div>
-            <div class='metric-card'><h3>{fmt_dec(sem['sgpa'].std())}</h3><p>Std Dev</p></div>
-            <div class='metric-card'><h3>{trend_sem['sgpa'].iloc[-1] - trend_sem['sgpa'].iloc[0] if len(trend_sem)>1 else 0:+.2f}</h3><p>Trend*</p></div>
-        </div>""", unsafe_allow_html=True)
+        st.markdown(f"""<div class="metric-container"><div class='metric-card'><h3>{fmt_dec(sem['sgpa'].max())}</h3><p>High</p></div><div class='metric-card'><h3>{fmt_dec(sem['sgpa'].min())}</h3><p>Low</p></div><div class='metric-card'><h3>{fmt_dec(sem['sgpa'].mean())}</h3><p>Average</p></div><div class='metric-card'><h3>{fmt_dec(sem['sgpa'].std())}</h3><p>Std Dev</p></div><div class='metric-card'><h3>{trend_sem['sgpa'].iloc[-1] - trend_sem['sgpa'].iloc[0] if len(trend_sem)>1 else 0:+.2f}</h3><p>Trend*</p></div></div>""", unsafe_allow_html=True)
     st.markdown("---")
     st.subheader("Backlog History")
     backlogs = exam_history[exam_history['grade'].isin(['F', 'Ab', 'ABSENT']) | (exam_history['grade_points'] == 0)].copy()
@@ -537,12 +451,7 @@ def render_individual_tab(students_df):
     marks = load_student_marks(hall_ticket, s_sel)
     if not marks.empty:
         s_info = sem[sem['semester']==s_sel].iloc[0]
-        st.markdown(f"""
-        <div class="metric-container" style="grid-template-columns: repeat(3, 1fr);">
-            <div class='metric-card'><h3>{fmt_dec(s_info['sgpa'])}</h3><p>SGPA</p></div>
-            <div class='metric-card'><h3>{s_info['credits']}</h3><p>Credits</p></div>
-            <div class='metric-card'><h3>{clean_status(s_info['status'])}</h3><p>Status</p></div>
-        </div>""", unsafe_allow_html=True)
+        st.markdown(f"""<div class="metric-container" style="grid-template-columns: repeat(3, 1fr);"><div class='metric-card'><h3>{fmt_dec(s_info['sgpa'])}</h3><p>SGPA</p></div><div class='metric-card'><h3>{s_info['credits']}</h3><p>Credits</p></div><div class='metric-card'><h3>{clean_status(s_info['status'])}</h3><p>Status</p></div></div>""", unsafe_allow_html=True)
         for m_type in ['REGULAR','HONORS','MINORS']:
             m_sub = marks[marks['subject_type']==m_type]
             if not m_sub.empty:
@@ -555,14 +464,7 @@ def render_individual_tab(students_df):
                 html_m = '<div class="mobile-only mobile-scroll-box">'
                 for _, m in m_sub.iterrows():
                     color = "#16a34a" if m['grade'] not in ['F','Ab'] else "#dc2626"
-                    html_m += f"""
-                    <div style="border-bottom:1px solid #e5e7eb; padding:10px; background-color: white; margin-bottom: 2px;">
-                        <div style="display:flex; justify-content:space-between; align-items: center;">
-                            <span class="black-text-force" style="font-weight:700; font-size:0.9rem;">{m['subject_name']}</span>
-                            <span style="font-weight:800; color:{color} !important; font-size: 1rem;">{m['grade']}</span>
-                        </div>
-                        <div class="black-text-force" style="font-size:0.8rem; margin-top: 4px;">{m['subject_code']} | Cr: {m['credits']}</div>
-                    </div>"""
+                    html_m += f"""<div style="border-bottom:1px solid #e5e7eb; padding:10px; background-color: white; margin-bottom: 2px;"><div style="display:flex; justify-content:space-between; align-items: center;"><span class="black-text-force" style="font-weight:700; font-size:0.9rem;">{m['subject_name']}</span><span style="font-weight:800; color:{color} !important; font-size: 1rem;">{m['grade']}</span></div><div class="black-text-force" style="font-size:0.8rem; margin-top: 4px;">{m['subject_code']} | Cr: {m['credits']}</div></div>"""
                 html_m += "</div>"
                 st.markdown(html_m, unsafe_allow_html=True)
                 if m_type == 'REGULAR':
