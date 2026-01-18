@@ -1,3 +1,14 @@
+---
+title: JNTU Results Dashboard
+emoji: 🎓
+colorFrom: blue
+colorTo: indigo
+sdk: streamlit
+sdk_version: 1.41.1
+app_file: app.py
+pinned: false
+---
+
 # JNTU Dashboard
 
 This is a full-stack data pipeline designed to scrape student results from the JNTU web portal, extract personal data from administrative PDFs, store structured data in SQLite, and visualize academic performance via an interactive dashboard.
@@ -126,14 +137,3 @@ This tool is for educational and analytical purposes only. Ensure you have the n
 
 ### Lines of Code
 ![Lines of Code](https://github.com/msrsaditya/JNTU-Results/blob/main/Lines%20of%20Code.png)
-
----
-title: JNTU Results Dashboard
-emoji: 🎓
-colorFrom: blue
-colorTo: indigo
-sdk: streamlit
-sdk_version: 1.41.1
-app_file: app.py
-pinned: false
----
