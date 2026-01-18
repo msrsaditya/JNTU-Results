@@ -32,9 +32,16 @@ def get_short_degree_class(long_class):
 def clean_status(status):
     if not status: return "-"
     s = str(status).upper()
-    if "PASS" in s or "COMPLETED" in s or "PROMOTED" in s: return "Pass"
-    if "FAIL" in s: return "Fail"
+    if "PASS" in s or "COMPLETED" in s or "PROMOTED" in s or "AWARDED" in s: return "Pass"
+    if "FAIL" in s or "NOT AWARDED" in s: return "Fail"
     return status.title()
+def format_phone_number(val):
+    s = str(val).strip()
+    if s == 'nan' or s == 'None' or s == '': return "-"
+    if s.replace('.', '').isdigit():
+        if '.' in s: s = s.split('.')[0]
+        if len(s) == 12 and s.startswith("91"): return "+" + s
+    return s
 def fix_chart_layout(fig, height=400):
     fig.update_layout(height=height, margin=dict(l=20, r=20, t=30, b=40), legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1), dragmode=False)
     return fig
@@ -56,13 +63,16 @@ def get_database_connection():
 @st.cache_data(ttl=600)
 def load_all_students():
     conn = get_database_connection()
-    return pd.read_sql_query("SELECT * FROM students WHERE status = 'ACTIVE'", conn)
+    df = pd.read_sql_query("SELECT * FROM students WHERE status = 'ACTIVE'", conn)
+    if 'phone' in df.columns:
+        df['phone'] = df['phone'].apply(format_phone_number)
+    return df
 @st.cache_data(ttl=600)
 def load_all_cgpa_data():
     conn = get_database_connection()
-    query = """SELECT s.hall_ticket, s.full_name, s.branch, s.student_type, s.degree_type, c.regular_cgpa, c.regular_percentage, c.regular_credits_secured, c.regular_credits_registered, c.degree_class, c.regular_degree_status, c.honors_cgpa, c.minors_cgpa, c.honors_degree_status, c.minors_degree_status FROM students s JOIN overall_cgpa c ON s.hall_ticket = c.hall_ticket WHERE s.status = 'ACTIVE' ORDER BY c.regular_cgpa DESC"""
+    query = """SELECT s.hall_ticket, s.full_name, s.branch, s.student_type, s.degree_type, c.regular_cgpa, c.regular_percentage, c.regular_credits_secured, c.regular_credits_registered, c.degree_class, c.regular_degree_status, c.honors_cgpa, c.minors_cgpa, c.honors_degree_status, c.minors_degree_status, c.honors_credits_registered, c.honors_credits_secured, c.minors_credits_registered, c.minors_credits_secured FROM students s JOIN overall_cgpa c ON s.hall_ticket = c.hall_ticket WHERE s.status = 'ACTIVE' ORDER BY c.regular_cgpa DESC"""
     df = pd.read_sql_query(query, conn)
-    for c in ['regular_cgpa', 'regular_percentage', 'regular_credits_secured', 'regular_credits_registered', 'honors_cgpa', 'minors_cgpa']:
+    for c in ['regular_cgpa', 'regular_percentage', 'regular_credits_secured', 'regular_credits_registered', 'honors_cgpa', 'minors_cgpa', 'honors_credits_registered', 'honors_credits_secured', 'minors_credits_registered', 'minors_credits_secured']:
         df[c] = pd.to_numeric(df[c], errors='coerce').fillna(0)
     return df
 @st.cache_data(ttl=600)
@@ -92,10 +102,12 @@ def load_all_exam_history():
 def load_student_data(hall_ticket):
     conn = get_database_connection()
     s_df = pd.read_sql_query("SELECT * FROM students WHERE hall_ticket = ?", conn, params=(hall_ticket,))
+    if not s_df.empty and 'phone' in s_df.columns:
+        s_df['phone'] = s_df['phone'].apply(format_phone_number)
     if s_df.empty: return None
     c_df = pd.read_sql_query("SELECT * FROM overall_cgpa WHERE hall_ticket = ?", conn, params=(hall_ticket,))
     if not c_df.empty:
-        for c in ['regular_cgpa', 'regular_percentage', 'regular_credits_secured', 'regular_credits_registered', 'honors_cgpa', 'minors_cgpa']:
+        for c in ['regular_cgpa', 'regular_percentage', 'regular_credits_secured', 'regular_credits_registered', 'honors_cgpa', 'minors_cgpa', 'honors_credits_registered', 'honors_credits_secured', 'minors_credits_registered', 'minors_credits_secured']:
             c_df[c] = pd.to_numeric(c_df[c], errors='coerce').fillna(0)
     sem_query = "SELECT * FROM semester_results WHERE hall_ticket = ? ORDER BY semester"
     sem_df = pd.read_sql_query(sem_query, conn, params=(hall_ticket,))
@@ -396,18 +408,43 @@ def render_individual_tab(students_df):
         img = Image.open(BytesIO(photo)) if photo else "https://via.placeholder.com/150x180.png?text=No+Photo"
         st.image(img) 
     with c_stats:
-        hm_val = "NA"
-        hm_label = "Honors/Minors CGPA"
-        if cgpa['honors_cgpa'] > 0: 
-            hm_val = fmt_dec(cgpa['honors_cgpa'])
-            hm_label = "Honors CGPA"
-        elif cgpa['minors_cgpa'] > 0: 
-            hm_val = fmt_dec(cgpa['minors_cgpa'])
-            hm_label = "Minors CGPA"
         all_c = load_all_cgpa_data()
         rank = (all_c['regular_cgpa'] > cgpa['regular_cgpa']).sum() + 1
         percentile = ((len(all_c)-rank+1)/len(all_c)*100)
-        st.markdown(f"""<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;"><div style="flex: 1 1 140px;"><div class="stat-text-val">{fmt_dec(cgpa['regular_cgpa'])}</div><div class="stat-text-lbl">Overall CGPA</div></div><div style="flex: 1 1 140px;"><div class="stat-text-val">{hm_val}</div><div class="stat-text-lbl">{hm_label}</div></div><div style="flex: 1 1 140px;"><div class="stat-text-val">{int(cgpa['regular_credits_secured'])}/{int(cgpa['regular_credits_registered'])}</div><div class="stat-text-lbl">Credits</div></div><div style="flex: 1 1 140px;"><div class="stat-text-val">{rank}/{len(all_c)}</div><div class="stat-text-lbl">Batch Rank</div></div><div style="flex: 1 1 140px;"><div class="stat-text-val">{fmt_dec(cgpa['regular_percentage'])}%</div><div class="stat-text-lbl">Percentage</div></div><div style="flex: 1 1 140px;"><div class="stat-text-val">{fmt_dec(percentile)}%</div><div class="stat-text-lbl">Percentile</div></div><div style="flex: 1 1 140px;"><div class="stat-text-val">{get_short_degree_class(cgpa['degree_class'])}</div><div class="stat-text-lbl">Class</div></div></div>""", unsafe_allow_html=True)
+        def create_card(val, lbl):
+            return f"<div style='flex: 1 1 140px;'><div class='stat-text-val'>{val}</div><div class='stat-text-lbl'>{lbl}</div></div>"
+        stats_html = ""
+        if cgpa['honors_cgpa'] > 0:
+            stats_html += create_card(fmt_dec(cgpa['regular_cgpa']), "Regular CGPA")
+            stats_html += create_card(fmt_dec(cgpa['honors_cgpa']), "Honors CGPA")
+            stats_html += create_card(f"{int(cgpa['regular_credits_secured'])}/{int(cgpa['regular_credits_registered'])}", "Regular Credits")
+            stats_html += create_card(f"{int(cgpa['honors_credits_secured'])}/{int(cgpa['honors_credits_registered'])}", "Honors Credits")
+            stats_html += create_card(f"{fmt_dec(cgpa['regular_percentage'])}%", "Percentage")
+            stats_html += create_card(f"{fmt_dec(percentile)}%", "Percentile")
+            stats_html += create_card(f"{rank}/{len(all_c)}", "Batch Rank")
+            stats_html += create_card(get_short_degree_class(cgpa['degree_class']), "Regular Degree Class")
+            stats_html += create_card(clean_status(cgpa['regular_degree_status']), "Regular Degree Status")
+            stats_html += create_card(clean_status(cgpa['honors_degree_status']), "Honors Degree Status")
+        elif cgpa['minors_cgpa'] > 0:
+            stats_html += create_card(fmt_dec(cgpa['regular_cgpa']), "Regular CGPA")
+            stats_html += create_card(fmt_dec(cgpa['minors_cgpa']), "Minors CGPA")
+            stats_html += create_card(f"{int(cgpa['regular_credits_secured'])}/{int(cgpa['regular_credits_registered'])}", "Regular Credits")
+            stats_html += create_card(f"{int(cgpa['minors_credits_secured'])}/{int(cgpa['minors_credits_registered'])}", "Minors Credits")
+            stats_html += create_card(f"{fmt_dec(cgpa['regular_percentage'])}%", "Percentage")
+            stats_html += create_card(f"{fmt_dec(percentile)}%", "Percentile")
+            stats_html += create_card(f"{rank}/{len(all_c)}", "Batch Rank")
+            stats_html += create_card(get_short_degree_class(cgpa['degree_class']), "Regular Degree Class")
+            stats_html += create_card(clean_status(cgpa['regular_degree_status']), "Regular Degree Status")
+            stats_html += create_card(clean_status(cgpa['minors_degree_status']), "Minors Degree Status")
+        else:
+            stats_html += create_card(fmt_dec(cgpa['regular_cgpa']), "CGPA")
+            stats_html += create_card(f"{int(cgpa['regular_credits_secured'])}/{int(cgpa['regular_credits_registered'])}", "Credits")
+            stats_html += create_card(f"{fmt_dec(cgpa['regular_percentage'])}%", "Percentage")
+            stats_html += create_card(f"{fmt_dec(percentile)}%", "Percentile")
+            stats_html += create_card(f"{rank}/{len(all_c)}", "Batch Rank")
+            stats_html += create_card(get_short_degree_class(cgpa['degree_class']), "Degree Class")
+            stats_html += create_card(clean_status(cgpa['regular_degree_status']), "Degree Status")
+        st.markdown(f"""<div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">{stats_html}</div>""", unsafe_allow_html=True)
     st.markdown("---")
     if not sem.empty:
         st.subheader("Performance Trend")
@@ -458,7 +495,7 @@ def render_individual_tab(students_df):
                 st.markdown(f"**{m_type.title()} Subjects**")
                 disp = m_sub[['subject_code','subject_name','credits','grade','grade_points']].copy()
                 disp.index = range(1, len(disp)+1)
-                disp.columns = ['Code','Subject','Cr','Gr','CGPA']
+                disp.columns = ['Code','Subject','Credits','Gr','CGPA']
                 disp.index.name = "S.No."
                 st.dataframe(disp)
                 html_m = '<div class="mobile-only mobile-scroll-box">'
