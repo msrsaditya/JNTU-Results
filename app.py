@@ -501,7 +501,7 @@ def render_individual_tab(students_df):
                 html_m = '<div class="mobile-only mobile-scroll-box">'
                 for _, m in m_sub.iterrows():
                     color = "#16a34a" if m['grade'] not in ['F','Ab'] else "#dc2626"
-                    html_m += f"""<div style="border-bottom:1px solid #e5e7eb; padding:10px; background-color: white; margin-bottom: 2px;"><div style="display:flex; justify-content:space-between; align-items: center;"><span class="black-text-force" style="font-weight:700; font-size:0.9rem;">{m['subject_name']}</span><span style="font-weight:800; color:{color} !important; font-size: 1rem;">{m['grade']}</span></div><div class="black-text-force" style="font-size:0.8rem; margin-top: 4px;">{m['subject_code']} | Cr: {m['credits']}</div></div>"""
+                    html_m += f"""<div style="border-bottom:1px solid #e5e7eb; padding:10px; background-color: white; margin-bottom: 2px;"><div style="display:flex; justify-content:space-between; align-items: center;"><span class="black-text-force" style="font-weight:700; font-size:0.9rem;">{m['subject_name']}</span><span style="font-weight:800; color:{color} !important; font-size: 1rem;">{m['grade']}</span></div><div class="black-text-force" style="font-size:0.8rem; margin-top: 4px;">{m['subject_code']} | Credits: {m['credits']}</div></div>"""
                 html_m += "</div>"
                 st.markdown(html_m, unsafe_allow_html=True)
                 if m_type == 'REGULAR':
